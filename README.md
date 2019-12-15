@@ -1,1 +1,2 @@
-# Data Wrangling with the *tidyverse*: *tidyr*
+## Data Wrangling with the *tidyverse*: *tidyr*
+
