@@ -1,0 +1,17 @@
+---
+title: 'Data Wrangling with *dplyr*'
+author: 'Luca Valnegri'
+date: '`r format(Sys.Date(), "%d %B %Y")`'
+output: 
+    rmdformats::readthedown:
+        theme: lumen
+        highlight: tango
+#        code_fold: hide
+        css: 'https://datamaps.uk/assets/WeR/nb.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+

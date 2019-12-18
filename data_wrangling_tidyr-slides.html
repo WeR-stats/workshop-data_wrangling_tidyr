@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>💻 R Workshop 💻</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Luca Valnegri" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.3.1/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://datamaps.uk/helpers/xaringan/xari.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# 💻 <i>R</i> Workshop 💻
+## Data Wrangling with <i>tidyr</i>
+### Luca Valnegri
+
+---
+
+layout: true
+&lt;div class="wer-header"&gt; &lt;img class="logo" src="https://datamaps.uk/helpers/xaringan/logo_white.png"/&gt; &lt;/div&gt;
+&lt;div class="wer-footer"&gt; &lt;span&gt; &amp;copy;2019 WeR meetup &lt;br&gt; https://github.com/WeR-stats/ &lt;/span&gt; &lt;/div&gt;
+
+
+
+---
+# Why *tidyr*
+
+Provides functionalities to *reshape* the layout of data sets
+
+--
+
+ - Make observations from variables using `gather`
+
+--
+
+ - Make variables from observations with `spread`
+ 
+--
+
+ - Split columns using `separate`
+ 
+--
+
+ - Merge columns with `unite`
+
+
+---
+# *tidyr* verbs
+
+`gather`
+
+Used to reshape a dataset from *wide* to *long* format
+
+Collapses multiple columns into two columns:
+ - a *key* column that contains the former column names
+ - a *value* column that contains the former column cells
+
+
+---
+# *tidyr* verbs
+
+&lt;br&gt;
+&lt;img src="tidy0.png" width="120%" height="120%" /&gt;
+
+---
+# *tidyr* verbs
+
+&lt;br&gt;
+&lt;img src="tidy1.png" width="120%" height="120%" /&gt;
+
+---
+# *tidyr* verbs
+
+&lt;br&gt;
+&lt;img src="tidy2.png" width="120%" height="120%" /&gt;
+
+---
+# *tidyr* verbs
+
+&lt;br&gt;
+&lt;img src="tidy3.png" width="120%" height="120%" /&gt;
+
+---
+# *tidyr* verbs
+
+&lt;br&gt;
+&lt;img src="tidy4.png" width="120%" height="120%" /&gt;
+
+---
+# *tidyr* verbs
+
+&lt;br&gt;
+&lt;img src="tidy5.png" width="120%" height="120%" /&gt;
+
+---
+# *tidyr* verbs
+
+&lt;br&gt;
+&lt;img src="tidy6.png" width="120%" height="120%" /&gt;
+
+---
+# *tidyr* verbs
+
+`gather(data, key, value, cols)`
+
+ - `data` dataframe to reshape in long form
+ - `key` name of the new *key* (string) column
+ - `value` name of the new *value* (string) column
+ - `cols` name(s) or position(s) of the columns to collapse
+
+--
+
+Additional arguments:
+ - `na.rm` insert `TRUE` to remove all rows from output where the *value* column is `NA`
+ - `factor_key` insert `TRUE` to store the *key* values as factor (preserves the original ordering)
+
+---
+# *tidyr* verbs: *gather*
+
+.font70[
+  
+  ```r
+  dts &lt;- data.frame(
+      'Country' = c('France', 'Germany', 'Italy', 'U. Kingdom'),
+      'Y2014' = c(37524, 43561, 33946, 38252),
+      'Y2015' = c(37766, 43938, 44432, 45229),
+      'Y2016' = c(38063, 34302, 34655, 35220),
+      'Y2017' = c(38606, 38839, 39309, 39753)
+  )
+  ```
+]
+
+.font90[
+  &lt;table&gt;
+   &lt;thead&gt;
+    &lt;tr&gt;
+     &lt;th style="text-align:left;"&gt; Country &lt;/th&gt;
+     &lt;th style="text-align:left;"&gt; Y2014 &lt;/th&gt;
+     &lt;th style="text-align:left;"&gt; Y2015 &lt;/th&gt;
+     &lt;th style="text-align:left;"&gt; Y2016 &lt;/th&gt;
+     &lt;th style="text-align:left;"&gt; Y2017 &lt;/th&gt;
+    &lt;/tr&gt;
+   &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+     &lt;td style="text-align:left;"&gt; France &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 37,524 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 37,766 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 38,063 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 38,606 &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+     &lt;td style="text-align:left;"&gt; Germany &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 43,561 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 43,938 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 34,302 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 38,839 &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+     &lt;td style="text-align:left;"&gt; Italy &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 33,946 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 44,432 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 34,655 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 39,309 &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+     &lt;td style="text-align:left;"&gt; U. Kingdom &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 38,252 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 45,229 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 35,220 &lt;/td&gt;
+     &lt;td style="text-align:left;"&gt; 39,753 &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;/table&gt;
+]
+
+---
+# *tidyr* verbs
+
+`gather(dts, 'year', 'value', 2:ncol(dts))`
+
+.font40[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Country &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; France &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2014 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 37,524 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Germany &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2014 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 43,561 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Italy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2014 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 33,946 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; U. Kingdom &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2014 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 38,252 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; France &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2015 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 37,766 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Germany &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2015 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 43,938 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Italy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2015 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 44,432 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; U. Kingdom &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2015 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 45,229 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; France &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2016 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 38,063 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Germany &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2016 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 34,302 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Italy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2016 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 34,655 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; U. Kingdom &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2016 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 35,220 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; France &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2017 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 38,606 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Germany &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2017 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 38,839 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Italy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2017 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 39,309 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; U. Kingdom &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Y2017 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 39,753 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]]
+
+---
+# *tidyr* verbs
+
+## Your Turn
+
+Try to apply the above operation on the file 
+`cqc_hsca_active_locations.xlsx` 
+using only the columns concerning the *Regulated Activity*
+
+Imagine how the tidy dataset would look like with the three variables:
+ - *location_id*
+ - *activity*
+ - *value*
+ 
+---
+# *tidyr* verbs
+
+## Possible solution
+
+.font70[
+
+```r
+data_path &lt;- '~/workshop/data/datasets/'
+file.path(data_path, 'original', 'cqc_hsca_active_locations.xlsx') %&gt;% 
+  read_xlsx(2) %&gt;% 
+  select(location_id = `Location ID`, starts_with('Regulated')) %&gt;% 
+  gather('activity', 'value', starts_with('Regulated'), factor_key = TRUE) %&gt;% 
+  replace_na(list(value = 'N')) %&gt;% 
+  head()
+```
+]
+
+
+---
+# *tidyr* verbs
+
+`spread`
+
+Used to reshape a dataset from *long* to *wide* format
+
+Expand one column into multiple columns, filling the resulting cells with values from another column
+ - a *key* column that contains the new column names, each unique value in the *key* column becomes a new column name
+ - a *value* column that contains the new column cells
+
+
+---
+# *tidyr* verbs
+
+`spread(data, key, value)`
+
+ - `data` dataframe to reshape in wide form
+ - `key` name(s) or position(s) of the column(s) that provide the column names
+ - `value` name(s) or position(s) of the column(s) that provide the values for the cells
+
+--
+
+Additional arguments:
+ - `fill` the value to insert when a value is missing (default is `NA`)
+ - `drop` insert `FALSE` to keep the *key* values as factor
+ - `sep` insert a separator to build new column names 
+
+
+
+---
+# *tidyr* verbs
+
+`separate(data, col, into, sep, remove = TRUE)`
+
+ - `data` dataframe to reshape
+ - `col` the column name or position to split
+ - `into` the name of the new variables
+ - `sep` the symbol to use to separate the old variable for naming the new columns
+ - `remove` insert `FALSE` to keep the old column
+
+---
+# *tidyr* verbs
+
+`unite(data, col, [vars], sep, remove = TRUE)`
+
+ - `data` dataframe to reshape
+ - `col` Name of the new column
+ - `vars` a selection of named columns to concatenate, empty for *all* columns
+ - `sep` the symbol to use as separator between the old values to create the new value
+ - `remove` insert `FALSE` to keep the old column
+
+---
+# Resources
+
+--
+
+ - [Cheat Sheet]()
+ 
+--
+
+ - [Reference]()
+ 
+--
+
+ - [RStudio Tutorials]()
+
+--
+
+ - [Datacamp Skill Track]()
+
+
+---
+# Thank You!
+
+ - [<i class="fab  fa-twitter "></i> @datamaps](https://twitter.com/datamaps)
+
+ - [<i class="fab  fa-github "></i> lvalnegri](https://github.com/lvalnegri)
+ 
+ - [<i class="fab  fa-linkedin "></i> Luca Valnegri](https://www.linkedin.com/in/lucavalnegri)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
